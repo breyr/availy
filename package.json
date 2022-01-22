@@ -1,0 +1,25 @@
+{
+  "name": "availy",
+  "version": "1.0.0",
+  "description": "Project repository for Availy web app. Light LegWorQ. Powered by JavaScript, MySQL Database, and Oracle Cloud.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BreyRivera2021/availy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BreyRivera2021/availy/issues"
+  },
+  "homepage": "https://github.com/BreyRivera2021/availy#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^14.2.0",
+    "express": "^4.17.2",
+    "mysql": "^2.18.1"
+  }
+}
