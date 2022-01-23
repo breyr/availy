@@ -38,6 +38,13 @@ app.get('/dashboard', function (req, res) {
     res.sendFile('public/dashboard.html', { root: __dirname });
 })
 
+app.get('/checkUser', function (req, res) {
+    if (req.cookies.Availy) { res.send('1') } else { res.send('0') }
+})
+app.get('/bypass', function (req, res) {
+    if (req.cookies.Availy) { res.send('1') } else { res.send('0') }
+})
+
 app.post('/login', (req, res) => {
     let body = ''; req.on('data', function (chunk) { body += chunk; });
     req.on('end', function () {

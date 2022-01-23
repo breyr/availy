@@ -16,6 +16,14 @@ var employerCode = document.getElementById('employerCode');
 var createDisplayText = document.getElementById('createDisplayText');
 var createSubmit = document.getElementById('createSubmit');
 
+fetch('/bypass', { method: 'GET' })
+    .then(response => response.text())
+    .then(text => {
+        if (text == "1") {
+            location.href = '/dashboard'
+        }
+    })
+
 loginBtn.addEventListener('click', function () {
     loginDiv.style.display = "block";
     optionsDiv.style.display = "none";
