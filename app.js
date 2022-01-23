@@ -25,9 +25,17 @@ connection.connect(function (error) {
     }
 })
 
+// gets time in fifteen minutes for cookie expiration generation
+var inFifteenMinutes = new Date(new Date().getTime() + 15 * 60 * 1000);
+
 app.get('/', function (req, res) {
     console.log(`[/]: Get request received at '/'`);
     res.sendFile('public/start.html', { root: __dirname });
+})
+
+app.get('/dashboard', function (req, res) {
+    console.log(`[/dashboard]: Get request received at '/dashboard'`);
+    res.sendFile('public/dashboard.html', { root: __dirname });
 })
 
 app.post('/login', (req, res) => {
@@ -43,6 +51,7 @@ app.post('/login', (req, res) => {
                 // if users defined exists
                 if (results.length > 0) {
                     console.log(`Account Found: U:'${results[0].username}' P:'${results[0].password}'`);
+                    res.cookie(`Availy`, `${body[0]}`, { expires: inFifteenMinutes });
                     res.send('Login Successful');
                 } else {
                     console.log('No Account Found');
@@ -88,6 +97,7 @@ app.post('/create', (req, res) => {
                                         res.send('Sorry! There was an issue creating your account. Try reloading.');
                                     } else {
                                         console.log('[/create]: Success creating account!');
+                                        res.cookie(`Availy`, `${body[0]}`, { expires: inFifteenMinutes });
                                         res.send('Create Successful');
                                     }
                                 }); // create account
