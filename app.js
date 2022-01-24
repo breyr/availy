@@ -39,10 +39,22 @@ app.get('/dashboard', function (req, res) {
 })
 
 app.get('/checkUser', function (req, res) {
-    if (req.cookies.Availy) { res.send('1') } else { res.send('0') }
+    if (req.cookies.Availy) {
+        console.log(req.cookies.Availy)
+        // if cookie defined exists
+        connection.query(`SELECT * FROM ${process.env.DATABASE}.userinfo WHERE cookie = ?`, [req.cookies.Availy], function (error, results, fields) {
+            if (results.length > 0) { res.send('1'); } else { res.send('0'); }
+        });
+    } else { res.send('0') }
 })
 app.get('/bypass', function (req, res) {
-    if (req.cookies.Availy) { res.send('1') } else { res.send('0') }
+    if (req.cookies.Availy) {
+        connection.query(`SELECT * FROM ${process.env.DATABASE}.userinfo WHERE cookie = ?`, [req.cookies.Availy], function (error, results, fields) {
+            if (results.length > 0) { res.send('1'); } else { res.send('0'); }
+        });
+    } else {
+        res.send('0')
+    }
 })
 
 app.post('/login', (req, res) => {
@@ -58,11 +70,22 @@ app.post('/login', (req, res) => {
                 // if users defined exists
                 if (results.length > 0) {
                     console.log(`Account Found: U:'${results[0].username}' P:'${results[0].password}'`);
-                    res.cookie(`Availy`, `${body[0]}`, { expires: inFifteenMinutes });
-                    res.send('Login Successful');
+                    var today = new Date();
+                    var date = today.getFullYear() + '.' + (today.getMonth() + 1) + '.' + today.getDate();
+                    var time = today.getHours() + "." + today.getMinutes() + "." + today.getSeconds();
+                    var dateTime = date + '-' + time;
+                    connection.query(`UPDATE ${process.env.DATABASE}.userinfo SET cookie = '${body[0]}:${dateTime}' WHERE username = ?`, [body[0]], function (error, results, fields) {
+                        if (!!error) {
+                            res.send('Login Failed');
+                        } else {
+                            // cookie successfully updated
+                            res.cookie(`Availy`, `${body[0]}:${dateTime}`, { expires: inFifteenMinutes });
+                            res.send('Login Successful');
+                        }
+                    });
                 } else {
-                    console.log('No Account Found');
-                    res.send('Incorrect Username and/or Password!');
+                    // no account found
+                    res.send('1');
                 }
             });
         } else {
@@ -95,8 +118,12 @@ app.post('/create', (req, res) => {
                             // verifies body[3] with env values and replaces with string
                             if (body[3] == process.env.ARCADIAIT) {
                                 body[3] = 'ArcadiaIT';
+                                var today = new Date();
+                                var date = today.getFullYear() + '.' + (today.getMonth() + 1) + '.' + today.getDate();
+                                var time = today.getHours() + "." + today.getMinutes() + "." + today.getSeconds();
+                                var dateTime = date + '-' + time;
                                 // sets body[0], body[1], body[2], and body[3] into a userinfo
-                                connection.query(`INSERT INTO ${process.env.DATABASE}.userinfo (username, email, password, employer) VALUES ('${body[0]}', '${body[1]}', '${body[2]}', '${body[3]}');`, function (error, result, field) {
+                                connection.query(`INSERT INTO ${process.env.DATABASE}.userinfo (username, email, password, employer, cookie) VALUES ('${body[0]}', '${body[1]}', '${body[2]}', '${body[3]}', '${body[0]}:${dateTime}');`, function (error, result, field) {
                                     // if insert executes unsuccessfully
                                     if (!!error) {
                                         console.log('[/create]: There was an issue creating account');
@@ -104,7 +131,7 @@ app.post('/create', (req, res) => {
                                         res.send('Sorry! There was an issue creating your account. Try reloading.');
                                     } else {
                                         console.log('[/create]: Success creating account!');
-                                        res.cookie(`Availy`, `${body[0]}`, { expires: inFifteenMinutes });
+                                        res.cookie(`Availy`, `${body[0]}:${dateTime}`, { expires: inFifteenMinutes });
                                         res.send('Create Successful');
                                     }
                                 }); // create account
