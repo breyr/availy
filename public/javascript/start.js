@@ -24,13 +24,9 @@ fetch('/bypass', { method: 'GET' })
         }
     })
 
-loginBtn.addEventListener('click', function () {
-    loginDiv.style.display = "block";
-    optionsDiv.style.display = "none";
-});
 createBtn.addEventListener('click', function () {
+    loginDiv.style.display = "none";
     createDiv.style.display = "block";
-    optionsDiv.style.display = "none";
 });
 
 loginSubmit.addEventListener('click', function () {
